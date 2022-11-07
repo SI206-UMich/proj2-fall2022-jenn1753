@@ -68,7 +68,7 @@ def get_listings_from_search_results(html_file):
 
         return final_list
             
-print(get_listings_from_search_results('html_files/mission_district_search_results.html'))
+# print(get_listings_from_search_results('html_files/mission_district_search_results.html'))
 
 
 def get_listing_information(listing_id):
@@ -95,7 +95,41 @@ def get_listing_information(listing_id):
         number of bedrooms
     )
     """
-    pass
+    with open('html_files/listing_' + listing_id + '.html', 'r') as f:
+        contents = f.read()
+        soup = BeautifulSoup(contents, 'html.parser')
+
+        #policy number
+        li = soup.find('li', class_='f19phm7j dir dir-ltr')
+        p_num = li.find('span', class_='ll4r2nl dir dir-ltr').text
+
+        #place type
+        title = soup.find('title').text.lower()
+        if "private" in title:
+            place_type = "Private Room"
+        elif "shared" in title:
+            place_type = "Shared Room"
+        else:
+            place_type = "Entire Room"
+        
+        regex = '^([0-9]+).+$'
+        li_list = soup.find_all('li', class_='l7n4lsf dir dir-ltr')
+        for l in li_list:
+            if l.find('span', class_='') != None:
+                span = l.find('span', class_='').text
+                if 'bedroom' in span:
+                    bedroom_num = int(re.findall(regex, span)[0])
+                    # print(bedroom_num)
+
+        lst = []
+        lst.append(p_num)
+        lst.append(place_type)
+        lst.append(bedroom_num)
+
+        tup = tuple(lst)
+        return tup 
+
+print(get_listing_information('50010586'))
 
 
 def get_detailed_listing_database(html_file):
