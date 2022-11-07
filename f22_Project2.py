@@ -319,10 +319,11 @@ class TestCases(unittest.TestCase):
             # check that the third element in the tuple is an int
             self.assertEqual(type(listing_information[2]), int)
         # check that the first listing in the html_list has policy number 'STR-0001541'
-
+            self.assertEqual(listing_information[0][0], 'STR-0001541')
         # check that the last listing in the html_list is a "Private Room"
-
+            self.assertEqual(listing_information[-1][1], "Private Room")
         # check that the third listing has one bedroom
+            self.assertEqual(listing_information[2][-1], 1)
 
         pass
 
