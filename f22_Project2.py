@@ -25,7 +25,50 @@ def get_listings_from_search_results(html_file):
         ('Loft in Mission District', 210, '1944564'),  # example
     ]
     """
-    pass
+    
+    with open(html_file, 'r') as f:
+        contents = f.read()
+        soup = BeautifulSoup(contents, 'html.parser')
+        
+        div_list = soup.find_all('div', class_="t1jojoys dir dir-ltr")
+        title_list = []
+        for div in div_list:
+            title = div.text
+            title_list.append(title)
+        
+        span_list = soup.find_all('span', class_='_tyxjp1')
+        price_list = []
+        for span in span_list:
+            price = int(span.text[1:])
+            price_list.append(price)
+        
+        meta_list = soup.find_all('meta')
+        url_list = []
+        for meta in meta_list:
+            if meta.get('content', None) != None and "www.airbnb.com/rooms/" in meta.get('content', None):
+                listing_url = meta.get('content', None)
+                url_list.append(listing_url)
+        
+        regex = 'www.airbnb.com/rooms/p?l?u?s?\/?([0-9]+)\?'
+        ids = []
+        for url in url_list:
+            id_list = re.findall(regex, url)
+            for id in id_list:
+                ids.append(id)
+        
+        final_list = []
+        for i in range(len(title_list)):
+            l = []
+            l.append(title_list[i])
+            l.append(price_list[i])
+            l.append(ids[i])
+
+            tup = tuple(l)
+            final_list.append(tup)
+
+        return final_list
+            
+print(get_listings_from_search_results('html_files/mission_district_search_results.html'))
 
 
 def get_listing_information(listing_id):
