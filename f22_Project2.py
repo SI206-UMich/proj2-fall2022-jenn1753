@@ -68,7 +68,7 @@ def get_listings_from_search_results(html_file):
 
         return final_list
             
-# print(get_listings_from_search_results('html_files/mission_district_search_results.html'))
+print(get_listings_from_search_results('html_files/mission_district_search_results.html'))
 
 
 def get_listing_information(listing_id):
@@ -240,7 +240,7 @@ def check_policy_numbers(data):
     regex1 = '20[0-9]{2}-00[0-9]{4}STR'
     regex2 = 'STR-000[0-9]{4}'
     for listing in data:
-        if (listing[-3] == "Pending" or listing[-3] == "Exempt") == False:
+        if listing[-3] != "Pending" and listing[-3] != "Exempt":
             if re.search(regex1, listing[-3]) == None and re.search(regex2, listing[-3]) == None:
                 incorrect_p_nums.append(listing[-3])
     return incorrect_p_nums
@@ -261,7 +261,23 @@ def extra_credit(listing_id):
     gone over their 90 day limit, else return True, indicating the lister has
     never gone over their limit.
     """
-    pass
+    with open('html_files/listing_' + listing_id + '.html', 'r') as f:
+        contents = f.read()
+        soup = BeautifulSoup(contents, 'html.parser')
+
+        div_list = soup.find_all('div')
+        for div in div_list:
+            div_c_list = div.find_all('div', class_='t9gtck5 dir dir-ltr')
+            print(div_c_list)
+                # h3 = div_c.find('h3').text
+                # print(h3)
+        # for li in li_list:
+        #     span_list = li.find('span', class_='ll4r2nl dir dir-ltr')
+        #     print(span_list)
+                
+            
+extra_credit('16204265')
+
 
 
 class TestCases(unittest.TestCase):
@@ -275,11 +291,12 @@ class TestCases(unittest.TestCase):
         # check that the variable you saved after calling the function is a list
         self.assertEqual(type(listings), list)
         # check that each item in the list is a tuple
-
+        for item in listings:
+            self.assertEqual(type(item), type(tuple()))
         # check that the first title, cost, and listing id tuple is correct (open the search results html and find it)
-
+        self.assertEqual(listings[0], ('Loft in Mission District', 210, '1944564'))
         # check that the last title is correct (open the search results html and find it)
-        pass
+        self.assertEqual(listings[-1][0], 'Guest suite in Mission District')
 
     def test_get_listing_information(self):
         html_list = ["1623609",
