@@ -99,9 +99,12 @@ def get_listing_information(listing_id):
         contents = f.read()
         soup = BeautifulSoup(contents, 'html.parser')
 
+        lst = []
+
         #policy number
         li = soup.find('li', class_='f19phm7j dir dir-ltr')
         p_num = li.find('span', class_='ll4r2nl dir dir-ltr').text
+        lst.append(p_num)
 
         #place type
         title = soup.find('title').text.lower()
@@ -112,6 +115,8 @@ def get_listing_information(listing_id):
         else:
             place_type = "Entire Room"
         
+        lst.append(place_type)
+        
         regex = '^([0-9]+).+$'
         li_list = soup.find_all('li', class_='l7n4lsf dir dir-ltr')
         for l in li_list:
@@ -119,17 +124,13 @@ def get_listing_information(listing_id):
                 span = l.find('span', class_='').text
                 if 'bedroom' in span:
                     bedroom_num = int(re.findall(regex, span)[0])
-                    # print(bedroom_num)
+                    lst.append(bedroom_num)
 
-        lst = []
-        lst.append(p_num)
-        lst.append(place_type)
-        lst.append(bedroom_num)
 
         tup = tuple(lst)
         return tup 
 
-print(get_listing_information('50010586'))
+# print(get_listing_information('28668414'))
 
 
 def get_detailed_listing_database(html_file):
@@ -146,8 +147,22 @@ def get_detailed_listing_database(html_file):
         ...
     ]
     """
-    pass
+    final_lst = []
+    for listing in get_listings_from_search_results(html_file):
+        lst = []
+        lst.append(listing[0])
+        lst.append(listing[1])
+        lst.append(listing[2])
+        listing_info = get_listing_information(listing[2])
+        for item in listing_info:
+            lst.append(item)
+        
+        tup = tuple(lst)
+        final_lst.append(tup)
 
+    return final_lst
+    
+print(get_detailed_listing_database('html_files/mission_district_search_results.html'))
 
 def write_csv(data, filename):
     """
