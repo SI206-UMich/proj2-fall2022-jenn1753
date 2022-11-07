@@ -319,13 +319,12 @@ class TestCases(unittest.TestCase):
             # check that the third element in the tuple is an int
             self.assertEqual(type(listing_information[2]), int)
         # check that the first listing in the html_list has policy number 'STR-0001541'
-            self.assertEqual(listing_information[0][0], 'STR-0001541')
+        self.assertEqual(listing_information[0][0], 'STR-0001541')
         # check that the last listing in the html_list is a "Private Room"
-            self.assertEqual(listing_information[-1][1], "Private Room")
+        self.assertEqual(listing_information[-1][1], "Private Room")
         # check that the third listing has one bedroom
-            self.assertEqual(listing_information[2][-1], 1)
+        self.assertEqual(listing_information[2][-1], 1)
 
-        pass
 
     def test_get_detailed_listing_database(self):
         # call get_detailed_listing_database on "html_files/mission_district_search_results.html"
@@ -340,11 +339,11 @@ class TestCases(unittest.TestCase):
 
         # check that the first tuple is made up of the following:
         # 'Loft in Mission District', 210, '1944564', '2022-004088STR', 'Entire Room', 1
-
+        self.assertEqual(detailed_database[0], ('Loft in Mission District', 210, '1944564', '2022-004088STR', 'Entire Room', 1))
         # check that the last tuple is made up of the following:
         # 'Guest suite in Mission District', 238, '32871760', 'STR-0004707', 'Entire Room', 1
+        self.assertEqual(detailed_database[-1], ('Guest suite in Mission District', 238, '32871760', 'STR-0004707', 'Entire Room', 1))
 
-        pass
 
     def test_write_csv(self):
         # call get_detailed_listing_database on "html_files/mission_district_search_results.html"
@@ -361,12 +360,12 @@ class TestCases(unittest.TestCase):
         # check that there are 21 lines in the csv
         self.assertEqual(len(csv_lines), 21)
         # check that the header row is correct
-
+        self.assertEqual(csv_lines[0], 'Listing Title,Cost,Listing ID,Policy Number, Place Type,Number of Bedrooms\n')
         # check that the next row is Private room in Mission District,82,51027324,Pending,Private Room,1
-
+        self.assertEqual(self.assertEqual(csv_lines[1], 'Mission District,82,51027324,Pending,Private Room,1\n'))
         # check that the last row is Apartment in Mission District,399,28668414,Pending,Entire Room,2
+        self.assertEqual(csv_lines[-1], 'Apartment in Mission District,399,28668414,Pending,Entire Room,2\n')
 
-        pass
 
     def test_check_policy_numbers(self):
         # call get_detailed_listing_database on "html_files/mission_district_search_results.html"
