@@ -104,6 +104,11 @@ def get_listing_information(listing_id):
         #policy number
         li = soup.find('li', class_='f19phm7j dir dir-ltr')
         p_num = li.find('span', class_='ll4r2nl dir dir-ltr').text
+        if 'pending' in p_num.lower():
+            p_num = "Pending"
+        elif 'STR' not in p_num:
+            p_num = "Exempt"
+
         lst.append(p_num)
 
         #place type
@@ -119,18 +124,21 @@ def get_listing_information(listing_id):
         
         regex = '^([0-9]+).+$'
         li_list = soup.find_all('li', class_='l7n4lsf dir dir-ltr')
+        bedroom_info = False
         for l in li_list:
             if l.find('span', class_='') != None:
                 span = l.find('span', class_='').text
                 if 'bedroom' in span:
+                    bedroom_info = True
                     bedroom_num = int(re.findall(regex, span)[0])
-                    lst.append(bedroom_num)
-
+        if bedroom_info == False:
+            bedroom_num = 1
+        lst.append(bedroom_num)
 
         tup = tuple(lst)
         return tup 
 
-# print(get_listing_information('28668414'))
+# print(get_listing_information('51106622'))
 
 
 def get_detailed_listing_database(html_file):
@@ -162,7 +170,7 @@ def get_detailed_listing_database(html_file):
 
     return final_lst
     
-print(get_detailed_listing_database('html_files/mission_district_search_results.html'))
+# print(get_detailed_listing_database('html_files/mission_district_search_results.html'))
 
 def write_csv(data, filename):
     """
@@ -186,8 +194,28 @@ def write_csv(data, filename):
 
     This function should not return anything.
     """
-    pass
 
+    new_lst = sorted(data, key=lambda x:x[1])
+    f = open(filename, 'a')
+
+    header = 'Listing Title,Cost,Listing ID,Policy Number,Place Type,Number of Bedrooms' + '\n'
+    f.write(header)
+
+    for line in new_lst:
+        print(line)
+        file_line = ''
+        for item in line:
+            if item != line[-1]:
+                file_line += str(item) + ','
+            else:
+                file_line += str(item) + '\n'
+        print(file_line)
+        f.write(file_line)
+
+    f.close()
+
+d = get_detailed_listing_database('html_files/mission_district_search_results.html')
+write_csv(d, 'new_file.csv5')
 
 def check_policy_numbers(data):
     """
