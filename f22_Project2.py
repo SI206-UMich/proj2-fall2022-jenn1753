@@ -106,7 +106,7 @@ def get_listing_information(listing_id):
         p_num = li.find('span', class_='ll4r2nl dir dir-ltr').text
         if 'pending' in p_num.lower():
             p_num = "Pending"
-        elif 'STR' not in p_num:
+        elif p_num.isalpha() == True or " " in p_num:
             p_num = "Exempt"
 
         lst.append(p_num)
@@ -215,7 +215,7 @@ def write_csv(data, filename):
     f.close()
 
 d = get_detailed_listing_database('html_files/mission_district_search_results.html')
-write_csv(d, 'new_file.csv5')
+# write_csv(d, 'new_file.csv')
 
 def check_policy_numbers(data):
     """
@@ -236,8 +236,16 @@ def check_policy_numbers(data):
     ]
 
     """
-    pass
+    incorrect_p_nums = []
+    regex1 = '20[0-9]{2}-00[0-9]{4}STR'
+    regex2 = 'STR-000[0-9]{4}'
+    for listing in data:
+        if (listing[-3] == "Pending" or listing[-3] == "Exempt") == False:
+            if re.search(regex1, listing[-3]) == None and re.search(regex2, listing[-3]) == None:
+                incorrect_p_nums.append(listing[-3])
+    return incorrect_p_nums
 
+# check_policy_numbers(d)
 
 def extra_credit(listing_id):
     """
