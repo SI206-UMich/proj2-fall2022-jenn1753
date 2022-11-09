@@ -266,18 +266,21 @@ def extra_credit(listing_id):
         contents = f.read()
         soup = BeautifulSoup(contents, 'html.parser')
 
-        div_list = soup.find_all('div')
-        for div in div_list:
-            div_c_list = div.find_all('div', class_='t9gtck5 dir dir-ltr')
-            print(div_c_list)
-                # h3 = div_c.find('h3').text
-                # print(h3)
-        # for li in li_list:
-        #     span_list = li.find('span', class_='ll4r2nl dir dir-ltr')
-        #     print(span_list)
-                
-            
-# extra_credit('16204265')
+        year_count = {}
+        li_list = soup.find_all('li', class_="_1f1oir5")
+        # print(li_list)
+        for li in li_list:
+            date = li.text[-4:]
+            year_count[date] = year_count.get(date, 0) + 1
+        
+        for y_count in year_count.values():
+            if y_count > 90:
+                return False
+            else:
+                return True
+
+print(extra_credit('1944564'))
+print(extra_credit('16204265'))
 
 
 
