@@ -279,9 +279,8 @@ def extra_credit(listing_id):
             else:
                 return True
 
-print(extra_credit('1944564'))
-print(extra_credit('16204265'))
-
+# print(extra_credit('1944564'))
+# print(extra_credit('16204265'))
 
 
 class TestCases(unittest.TestCase):
